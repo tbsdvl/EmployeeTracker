@@ -6,7 +6,6 @@ const connection = require("./db");
 // want to add departments, roles, and employees;
 // view departments, roles, and employees;
 // update employee roles
-
 const init = () => (
 
     inquirer.prompt({
@@ -18,7 +17,28 @@ const init = () => (
         "Update employee roles"]
     })
 )
-.then((data) => (
-    console.log(data)
-));
+.then((data) => {
+    console.log(data);
+    let selection = data.employeeTrack;
+    if(selection.includes("Add")){
+        addData(selection);
+    }
+});
 init();
+
+async function addData(selection){
+    await Promise.resolve(init());
+    if(selection.includes("Add")){
+        inquirer.prompt({
+            name: "addRecord",
+            type: "list",
+            message: "Would you like to add a department, role, or employee?: ",
+            choices: ["Department", "Role", "Employee"]
+        })
+        .then((data) => {
+            console.log(data);
+            return
+            // if(data === data.addRecord[0])
+        })
+    }
+};
