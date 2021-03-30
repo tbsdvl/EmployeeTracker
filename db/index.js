@@ -15,6 +15,7 @@ const connection = mysql.createConnection({
 const dbConnect = () => (
     connection.query('SELECT * FROM employee', (err, res) => {
         if (err) throw err
+        // Return a table of employee
         console.table(res);
 }));
-dbConnect();
+// dbConnect();

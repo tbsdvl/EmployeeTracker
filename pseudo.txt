@@ -55,3 +55,70 @@ VALUES ("Vicar", 60000.0, "Human Resources"), ("Engineer", 75000.0, "Maintenance
 
 INSERT INTO employee (first_name, last_name, manager_id)
 VALUES ("Max", "Desoto"), ("Parvati", "Holcomb"), ("Felix", "Millstone"), ("Ellie", "Fenhill"), ("Nyoka", NULL), ("SAM", NULL), ("Alex", "Hawthorne", 1)
+
+/db index.js
+// Import required modules
+const mysql = require("mysql");
+
+// Connect to the employee tracker database
+const connection = mysql.createConnection({
+    host: 'localhost',
+    port: 3306,
+    user: 'root',
+    password: 'root',
+    database: 'employee_trackerDB'
+});
+
+// Query the database and return fields and records from the
+// employee table
+const dbConnect = () => (
+    connection.query('SELECT * FROM employee', (err, res) => {
+        if (err) throw err
+        // Return a table of employee data
+        console.table(res);
+}));
+dbConnect();
+
+index.js
+
+Build a command-line application that at a minimum allows the user to:
+
+Add departments, roles, employees
+
+View departments, roles, employees
+
+Update employee roles
+
+Bonus points if you're able to:
+
+Update employee managers
+
+View employees by manager
+
+Delete departments, roles, and employees
+
+View the total utilized budget of a department -- ie the combined salaries of all employees in that department
+
+// Import required modules and db
+const inquirer = require("inquirer");
+const connection = reqruire("./db");
+
+// Initialize prompt to ask users whether they
+// want to add departments, roles, and employees;
+// view departments, roles, and employees;
+// update employee roles
+
+const init = () => (
+
+    inquirer.prompt({
+        name: "employeeTrack",
+        type: "list",
+        message: "Please select an action",
+        choices: ["Add departments, roles, or employees", 
+        "View departments, roles, or employees",
+        "Update employee roles"]
+    });
+)
+.then((data) => (
+    console.log(data);
+))
