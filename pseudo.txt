@@ -1,3 +1,4 @@
+schema.sql
 department:
 
 id - INT PRIMARY KEY
@@ -41,3 +42,16 @@ CREATE TABLE employee(
     FOREIGN KEY (role_id)
         REFERENCES role(id)
 );
+
+seeds.sql 
+
+USE employee_tracker;
+
+INSERT INTO department (name)
+VALUES ("Human Resources"), ("Maintenance"), ("Logistics"), ("Medicine"), ("Dissident Removal"), ("Sanitation")
+
+INSERT INTO role (title, salary, department_id)
+VALUES ("Vicar", 60000.0, "Human Resources"), ("Engineer", 75000.0, "Maintenance"), ("Stevedore", 45000.0, "Logistics"), ("Medic", 80000.0, "Medicine"), ("Merc", 55000.0, "Dissident Removal"), ("Sanitation Auto Mechanical", 0.0, "Sanitation")
+
+INSERT INTO employee (first_name, last_name, manager_id)
+VALUES ("Max", "Desoto"), ("Parvati", "Holcomb"), ("Felix", "Millstone"), ("Ellie", "Fenhill"), ("Nyoka", NULL), ("SAM", NULL), ("Alex", "Hawthorne", 1)
