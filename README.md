@@ -1,8 +1,7 @@
 # MyEmployeeTracker
 
 This application allows a user to interact with an employee database.
-A user may add a new department, role, and employee to the database; view <br>
-employees by department or role; update employee roles. <br> <br>
+A user may add a new department, role, and employee to the database; view employees by department or role; update employee roles. <br> <br>
 After forking or downloading the necessary folders, run node index.js to start the application <br>
 in your root directory's terminal.
 
