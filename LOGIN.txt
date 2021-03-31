@@ -1,0 +1,4 @@
+Should any issues arise logging into MySQL, please enter this information.
+
+User: root
+Password: root
