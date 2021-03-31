@@ -1,5 +1,6 @@
 // Import required modules
 const mysql = require("mysql");
+const util = require("util");
 
 // Connect to the employee tracker database
 const connection = mysql.createConnection({
@@ -10,12 +11,8 @@ const connection = mysql.createConnection({
     database: 'employee_trackerDB'
 });
 
-// Query the database and return fields and records from the
-// employee table
-const dbConnect = () => (
-    connection.query('SELECT * FROM employee', (err, res) => {
-        if (err) throw err
-        // Return a table of employee
-        console.table(res);
-}));
-// dbConnect();
+connection.connect();
+
+connection.query = util.promisify(connection.query);
+
+module.exports = connection;
