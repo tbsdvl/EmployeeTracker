@@ -5,7 +5,8 @@ const db = require("./db");
 // Initialize prompt to ask users whether they
 // want to add departments, roles, and employees;
 // view departments, roles, and employees;
-// update employee roles
+// update employee roles.
+// User may exit when finished
 const init = async () => {
   const { employeeTrack } = await inquirer.prompt({
     name: "employeeTrack",
@@ -18,7 +19,7 @@ const init = async () => {
       "View employees by departments",
       "View employees by roles",
       "Update employee roles",
-      "EXIT"
+      "EXIT",
     ],
   });
 
@@ -35,128 +36,150 @@ const init = async () => {
       addEmp();
       break;
     case "View employees by departments":
-        viewDept();
-        break;
+      viewDept();
+      break;
     case "View employees by roles":
-        viewRole();
-        break;
+      viewRole();
+      break;
     case "Update employee roles":
-        updateEmp();
-        break;
+      updateEmp();
+      break;
     default:
-        process.exit(0);
+      process.exit(0);
   }
 };
 init();
 
+// Prompt user to add new department name into department table
 const addDept = async () => {
-    const { newDept } = await inquirer.prompt({
-      name: "newDept",
-      type: "input",
-      message: "Please enter the name of the new department: ",
-    });
-    db.query(
-      `INSERT INTO department (name) VALUES ('${newDept}')`,
-      (err, res) => {
-        if (err) throw err;
-        console.table(res);
-        console.log(`Added ${newDept} to department table!`);
-      }
-    );
-    init();
-  };
+  const { newDept } = await inquirer.prompt({
+    name: "newDept",
+    type: "input",
+    message: "Please enter the name of the new department: ",
+  });
 
-  const addRole = async () => {
-    const { newRole, newRoleDept } = await inquirer.prompt([
+  // Add new department name into department table
+  db.query(
+    `INSERT INTO department (name) VALUES ('${newDept}')`,
+    (err, res) => {
+      if (err) throw err;
+      console.table(res);
+      console.log(`Added ${newDept} to department table!`);
+    }
+  );
+  init();
+};
+
+// Prompt user to add a new title and department id into role table
+const addRole = async () => {
+  const { newRole, newRoleDept } = await inquirer.prompt([
+    {
+      name: "newRole",
+      type: "input",
+      message: "Please enter the title of the new role: ",
+    },
+    {
+      name: "newRoleDept",
+      type: "input",
+      message: "Please input the new roles' department id: ",
+    },
+  ]);
+
+  // Add new title and department id to role table
+  db.query(
+    `INSERT INTO role (title, department_id) VALUES ('${newRole}', ${newRoleDept})`,
+    (err, res) => {
+      if (err) throw err;
+      console.table(res);
+      console.log(`Added ${newRole} to role table!`);
+    }
+  );
+  init();
+};
+
+// Prompt user to add a new employee's first and last name, including a role id
+// to the employee table
+const addEmp = async () => {
+  const { newEmpFirstName, newEmpLastName, newEmpRole } = await inquirer.prompt(
+    [
       {
-        name: "newRole",
+        name: "newEmpFirstName",
         type: "input",
-        message: "Please enter the title of the new role: ",
+        message: "Please enter the first name of the new employee: ",
       },
       {
-        name: "newRoleDept",
+        name: "newEmpLastName",
         type: "input",
-        message: "Please input the new roles' department id: ",
+        message: "Please enter the last name of the new employee: ",
       },
-    ]);
-  
-    db.query(
-      `INSERT INTO role (title, department_id) VALUES ('${newRole}', ${newRoleDept})`,
-      (err, res) => {
-        if (err) throw err;
-        console.table(res);
-        console.log(`Added ${newRole} to role table!`);
-      }
-    );
-    init();
-  };
-  
-  const addEmp = async () => {
-    const { newEmpFirstName, newEmpLastName, newEmpRole } = await inquirer.prompt(
-      [
-        {
-          name: "newEmpFirstName",
-          type: "input",
-          message: "Please enter the first name of the new employee: ",
-        },
-        {
-          name: "newEmpLastName",
-          type: "input",
-          message: "Please enter the last name of the new employee: ",
-        },
-        {
-          name: "newEmpRole",
-          type: "input",
-          message: "Please input the new employees' role id: ",
-        },
-      ]
-    );
-    db.query(
-      `INSERT INTO employee (first_name, last_name, role_id) VALUES ('${newEmpFirstName}', '${newEmpLastName}', ${newEmpRole})`,
-      (err, res) => {
-        if (err) throw err;
-        console.table(res);
-        console.log(
-          `Added ${newEmpFirstName} ${newEmpLastName} to employee table!`
-        );
-      }
-    );
-    init();
-  };
-  
-  const viewDept = () => {
-    db.query(
-      "SELECT department.name, employee.first_name, employee.last_name FROM department RIGHT JOIN employee ON department.id = employee.role_id ORDER BY department.id", (err, res) => {
-          if (err) throw err;
-          console.table(res);
-      });
-      init();
-  };
-  
-  const viewRole = () => {
-      db.query(
-        "SELECT role.title, employee.first_name, employee.last_name FROM role LEFT JOIN employee ON role.id = employee.id ORDER BY role.id", (err, res) => {
-            if (err) throw err;
-            console.table(res);
-        });
-        init();
-    };
-  
-  const updateEmp = async () => {
-      const { initRole, updateRole } = await inquirer.prompt([
-          {
-          name: 'initRole',
-          type: 'input',
-          message: 'Please enter the role you would like to update'
-          },
-        {
-            name: "updateRole",
-            type: "input",
-            message: "Please enter the new role"
-        }])
-      db.query(`UPDATE role SET title = '${updateRole}' WHERE title = '${initRole}'`, (err, res) => {
-          if (err) throw err;
-          console.log(res);
-      })
-      init();
-  }
+      {
+        name: "newEmpRole",
+        type: "input",
+        message: "Please input the new employees' role id: ",
+      },
+    ]
+  );
+
+  // Add the employee's first name, last name, and role id into the employee table
+  db.query(
+    `INSERT INTO employee (first_name, last_name, role_id) VALUES ('${newEmpFirstName}', '${newEmpLastName}', ${newEmpRole})`,
+    (err, res) => {
+      if (err) throw err;
+      console.table(res);
+      console.log(
+        `Added ${newEmpFirstName} ${newEmpLastName} to employee table!`
+      );
+    }
+  );
+  init();
+};
+
+// View employees by department
+const viewDept = () => {
+  db.query(
+    "SELECT department.name, employee.first_name, employee.last_name FROM department RIGHT JOIN employee ON department.id = employee.role_id ORDER BY department.id",
+    (err, res) => {
+      if (err) throw err;
+      console.table(res);
+    }
+  );
+  init();
+};
+
+// View employees by role
+const viewRole = () => {
+  db.query(
+    "SELECT role.title, employee.first_name, employee.last_name FROM role LEFT JOIN employee ON role.id = employee.id ORDER BY role.id",
+    (err, res) => {
+      if (err) throw err;
+      console.table(res);
+    }
+  );
+  init();
+};
+
+// Prompt user to update an employee's role
+const updateEmp = async () => {
+  const { initRole, updateRole } = await inquirer.prompt([
+    {
+      name: "initRole",
+      type: "input",
+      message: "Please enter the role you would like to update",
+    },
+    {
+      name: "updateRole",
+      type: "input",
+      message: "Please enter the new role",
+    },
+  ]);
+
+  // Update the role with the new user input role
+  db.query(
+    `UPDATE role SET title = '${updateRole}' WHERE title = '${initRole}'`,
+    (err, res) => {
+      if (err) throw err;
+      console.log(res);
+    }
+  );
+  init();
+};
