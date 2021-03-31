@@ -142,8 +142,19 @@ const addDept = async () => {
         init();
     };
   
-  const updateEmp = () => {
-      db.query("UPDATE role SET title = 'Salesperson' WHERE title = 'Paper Pusher'", (err, res) => {
+  const updateEmp = async () => {
+      const { initRole, updateRole } = await inquirer.prompt([
+          {
+          name: 'initRole',
+          type: 'input',
+          message: 'Please enter the role you would like to update'
+          },
+        {
+            name: "updateRole",
+            type: "input",
+            message: "Please enter the new role"
+        }])
+      db.query(`UPDATE role SET title = '${updateRole}' WHERE title = '${initRole}'`, (err, res) => {
           if (err) throw err;
           console.log(res);
       })
